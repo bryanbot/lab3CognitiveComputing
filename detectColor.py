@@ -29,27 +29,28 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Detect Color - local
+This example detects the different aspects of its color scheme in a local image.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
+print("===== Detect Color - local =====")
+# Open local image
+local_image_path = os.path.join (images_folder, "atardeceres-mas-bonitos-del-mundo-655x368.jpg")
 local_image = open(local_image_path, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Select visual feature(s) you want
+local_image_features = ["color"]
+# Call API with local image and features
+detect_color_results_local = computervision_client.analyze_image_in_stream(local_image, local_image_features)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
-else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+# Print results of the color scheme detected
+print("Getting color scheme of the local image: ")
+print("Is black and white: {}".format(detect_color_results_local.color.is_bw_img))
+print("Accent color: {}".format(detect_color_results_local.color.accent_color))
+print("Dominant background color: {}".format(detect_color_results_local.color.dominant_color_background))
+print("Dominant foreground color: {}".format(detect_color_results_local.color.dominant_color_foreground))
+print("Dominant colors: {}".format(detect_color_results_local.color.dominant_colors))
 print()
 '''
-END - Describe an Image - local
+END - Detect Color - local
 '''

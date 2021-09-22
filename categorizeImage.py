@@ -31,25 +31,27 @@ END - Quickstart variables
 '''
 
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Categorize an Image -  local
+This example extracts categories from a local image with a confidence score
 '''
-print("===== Describe an Image - local =====")
+print("===== Categorize an Image - local =====")
 # Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
+local_image_path = os.path.join (images_folder, "horse.jpg")
 local_image = open(local_image_path, "rb")
 
+# Select visual feature type(s)
+local_image_features = ["categories"]
 # Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+categorize_results_local = computervision_client.analyze_image_in_stream(local_image, local_image_features)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
+# Print category results with confidence score
+print("Categories from local image: ")
+if (len(categorize_results_local.categories) == 0):
+    print("No categories detected.")
 else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+    for category in categorize_results_local.categories:
+        print("'{}' with confidence {:.2f}%".format(category.name, category.score * 100))
 print()
 '''
-END - Describe an Image - local
+END - Categorize an Image - local
 '''

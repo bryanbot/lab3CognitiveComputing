@@ -13,39 +13,56 @@ import time
 Authenticate
 Authenticates your credentials and creates a client.
 '''
-subscription_key = "d1c9c08258b0478099fd421a577fb3f9"
-endpoint = "https://bryan-lab3.cognitiveservices.azure.com/"
+subscription_key = ""
+endpoint = ""
 
 computervision_client = ComputerVisionClient(endpoint, CognitiveServicesCredentials(subscription_key))
 
 '''
-OCR: Read File using the Read API, extract text - remote
-This example will extract text in an image, then print results, line by line.
-This API call can also extract handwriting style text (not shown).
+Quickstart variables
+These variables are shared by several examples
 '''
-print("===== Read File - remote =====")
-# Get an image with text
-read_image_url = "https://raw.githubusercontent.com/MicrosoftDocs/azure-docs/master/articles/cognitive-services/Computer-vision/Images/readsample.jpg"
+# Images used for the examples: Describe an image, Categorize an image, Tag an image, 
+# Detect faces, Detect adult or racy content, Detect the color scheme, 
+# Detect domain-specific content, Detect image types, Detect objects
+images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "images")
+'''
+END - Quickstart variables
+'''
 
-# Call API with URL and raw response (allows you to get the operation location)
-read_response = computervision_client.read(read_image_url,  raw=True)
+'''
+OCR: Read File using the Read API, extract text - local
+This example extracts text from a local image, then prints results.
+This API call can also recognize remote image text (shown in next example, Read File - remote).
+'''
+print("===== Read File - local =====")
+# Get image path
+read_image_path = os.path.join (images_folder, "OCR.jpg")
+# Open the image
+read_image = open(read_image_path, "rb")
 
-# Get the operation location (URL with an ID at the end) from the response
+# Call API with image and raw response (allows you to get the operation location)
+read_response = computervision_client.read_in_stream(read_image, raw=True)
+# Get the operation location (URL with ID as last appendage)
 read_operation_location = read_response.headers["Operation-Location"]
-# Grab the ID from the URL
+# Take the ID off and use to get results
 operation_id = read_operation_location.split("/")[-1]
 
-# Call the "GET" API and wait for it to retrieve the results 
+# Call the "GET" API and wait for the retrieval of the results
 while True:
     read_result = computervision_client.get_read_result(operation_id)
-    if read_result.status not in ['notStarted', 'running']:
+    if read_result.status.lower () not in ['notstarted', 'running']:
         break
-    time.sleep(1)
+    print ('Waiting for result...')
+    time.sleep(10)
 
-# Print the detected text, line by line
+# Print results, line by line
 if read_result.status == OperationStatusCodes.succeeded:
     for text_result in read_result.analyze_result.read_results:
         for line in text_result.lines:
             print(line.text)
             print(line.bounding_box)
 print()
+'''
+END - Read File - local
+'''

@@ -29,27 +29,26 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Detect Adult or Racy Content - local
+This example detects adult or racy content in a local image, then prints the adult/racy score.
+The score is ranged 0.0 - 1.0 with smaller numbers indicating negative results.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
+print("===== Detect Adult or Racy Content - local =====")
+# Open local image
+local_image_path = os.path.join (images_folder, "Kill_Bill.jpg")
 local_image = open(local_image_path, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Select visual features you want
+local_image_features = ["adult"]
+# Call API with local image and features
+detect_adult_results_local = computervision_client.analyze_image_in_stream(local_image, local_image_features)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
-else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+# Print results with adult/racy score
+print("Analyzing local image for adult or racy content ... ")
+print("Is adult content: {} with confidence {:.2f}".format(detect_adult_results_local .adult.is_adult_content, detect_adult_results_local .adult.adult_score * 100))
+print("Has racy content: {} with confidence {:.2f}".format(detect_adult_results_local .adult.is_racy_content, detect_adult_results_local .adult.racy_score * 100))
 print()
 '''
-END - Describe an Image - local
+END - Detect Adult or Racy Content - local
 '''

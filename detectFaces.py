@@ -29,27 +29,32 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Detect Faces - local
+This example detects faces in a local image, gets their gender and age, 
+and marks them with a bounding box.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
+print("===== Detect Faces - local =====")
+# Open local image
+local_image_path = os.path.join (images_folder, "Tipos-de-estudiantes-cual-eres-tu.jpg")
 local_image = open(local_image_path, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Select visual features(s) you want
+local_image_features = ["faces"]
+# Call API with local image and features
+detect_faces_results_local = computervision_client.analyze_image_in_stream(local_image, local_image_features)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
+# Print results with confidence score
+print("Faces in the local image: ")
+if (len(detect_faces_results_local.faces) == 0):
+    print("No faces detected.")
 else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+    for face in detect_faces_results_local.faces:
+        print("'{}' of age {} at location {}, {}, {}, {}".format(face.gender, face.age, \
+        face.face_rectangle.left, face.face_rectangle.top, \
+        face.face_rectangle.left + face.face_rectangle.width, \
+        face.face_rectangle.top + face.face_rectangle.height))
 print()
 '''
-END - Describe an Image - local
+END - Detect Faces - local
 '''

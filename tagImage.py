@@ -29,27 +29,26 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Tag an Image - local
+This example returns a tag (key word) for each thing in the image.
 '''
-print("===== Describe an Image - local =====")
+print("===== Tag an Image - local =====")
 # Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
+local_image_path = os.path.join (images_folder, "ibiza.jpg")
 local_image = open(local_image_path, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Call API local image
+tags_result_local = computervision_client.tag_image_in_stream(local_image)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
+# Print results with confidence score
+print("Tags in the local image: ")
+if (len(tags_result_local.tags) == 0):
+    print("No tags detected.")
 else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+    for tag in tags_result_local.tags:
+        print("'{}' with confidence {:.2f}%".format(tag.name, tag.confidence * 100))
 print()
 '''
-END - Describe an Image - local
+END - Tag an Image - local
 '''

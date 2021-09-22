@@ -29,27 +29,29 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Generate Thumbnail
+This example creates a thumbnail from both a local and URL image.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
-local_image = open(local_image_path, "rb")
+print("===== Generate Thumbnail =====")
+# Generate a thumbnail from a local image
+local_image_path_thumb = os.path.join (images_folder, "medium-shot-kids-laying-together.jpg")
+local_image_thumb = open(local_image_path_thumb, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+print("Generating thumbnail from a local image...")
+# Call the API with a local image, set the width/height if desired (pixels)
+# Returns a Generator object, a thumbnail image binary (list).
+thumb_local = computervision_client.generate_thumbnail_in_stream(100, 100, local_image_thumb, True)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
-else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+# Write the image binary to file
+with open("thumb_local.png", "wb") as f:
+    for chunk in thumb_local:
+        f.write(chunk)
+
+# Uncomment/use this if you are writing many images as thumbnails from a list
+# for i, image in enumerate(thumb_local, start=0):
+#      with open('thumb_{0}.jpg'.format(i), 'wb') as f:
+#         f.write(image)
+
+print("Thumbnail saved to local folder.")
 print()
-'''
-END - Describe an Image - local
-'''

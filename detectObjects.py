@@ -29,27 +29,28 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Detect Objects - local
+This example detects different kinds of objects with bounding boxes in a local image.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
-local_image = open(local_image_path, "rb")
+print("===== Detect Objects - local =====")
+# Open local image
+local_image_path_objects = os.path.join (images_folder, "kitchen-interior-design-with-wooden-table.jpg")
+local_image_objects = open(local_image_path_objects, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Call API with local image
+detect_objects_results_local = computervision_client.detect_objects_in_stream(local_image_objects)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
+# Print results of detection with bounding boxes
+print("Detecting objects in local image:")
+if len(detect_objects_results_local.objects) == 0:
+    print("No objects detected.")
 else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+    for object in detect_objects_results_local.objects:
+        print("object at location {}, {}, {}, {}".format( \
+        object.rectangle.x, object.rectangle.x + object.rectangle.w, \
+        object.rectangle.y, object.rectangle.y + object.rectangle.h))
 print()
 '''
-END - Describe an Image - local
+END - Detect Objects - local
 '''

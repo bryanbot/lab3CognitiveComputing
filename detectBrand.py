@@ -29,27 +29,30 @@ images_folder = os.path.join (os.path.dirname(os.path.abspath(__file__)), "image
 '''
 END - Quickstart variables
 '''
-
 '''
-Describe an Image - local
-This example describes the contents of an image with the confidence score.
+Detect Brands - local
+This example detects common brands like logos and puts a bounding box around them.
 '''
-print("===== Describe an Image - local =====")
-# Open local image file
-local_image_path = os.path.join (images_folder, "1500x844_lima_2035_2050.jpg")
-local_image = open(local_image_path, "rb")
+print("===== Detect Brands - local =====")
+# Open local image
+local_image_path_shirt = os.path.join (images_folder, "google.jpg")
+local_image_shirt = open(local_image_path_shirt, "rb")
 
-# Call API
-description_result = computervision_client.describe_image_in_stream(local_image)
+# Select the visual feature(s) you want
+local_image_features = ["brands"]
+# Call API with image and features
+detect_brands_results_local = computervision_client.analyze_image_in_stream(local_image_shirt, local_image_features)
 
-# Get the captions (descriptions) from the response, with confidence level
-print("Description of local image: ")
-if (len(description_result.captions) == 0):
-    print("No description detected.")
+# Print detection results with bounding box and confidence score
+print("Detecting brands in local image: ")
+if len(detect_brands_results_local.brands) == 0:
+    print("No brands detected.")
 else:
-    for caption in description_result.captions:
-        print("'{}' with confidence {:.2f}%".format(caption.text, caption.confidence * 100))
+    for brand in detect_brands_results_local.brands:
+        print("'{}' brand detected with confidence {:.1f}% at location {}, {}, {}, {}".format( \
+        brand.name, brand.confidence * 100, brand.rectangle.x, brand.rectangle.x + brand.rectangle.w, \
+        brand.rectangle.y, brand.rectangle.y + brand.rectangle.h))
 print()
 '''
-END - Describe an Image - local
+END - Detect brands - local
 '''
